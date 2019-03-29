@@ -1,28 +1,42 @@
 # -*- coding: utf-8 -*-
 
-amount = int(input())
-order = []
+# Quicksort ref = https://stackoverflow.com/questions/18262306/quicksort-with-python
 
-for i in range(amount):
+def partition(array, begin, end):
+    pivot = begin
+    for i in range(begin+1, end+1):
+        if array[i] <= array[begin]:
+            pivot += 1
+            array[i], array[pivot] = array[pivot], array[i]
+    array[pivot], array[begin] = array[begin], array[pivot]
+    return pivot
+
+def quicksort(array, begin, end):
+	if begin >= end:
+		return
+	pivot = partition(array, begin, end)
+	quicksort(array, begin, pivot-1)
+	quicksort(array, pivot+1, end)
+
+# Init algorithm
+amount = int(input())
+
+even = []
+odd = []
+
+for _ in range(amount):
     number = int(input())
 
-    number_is_even = number % 2 == 0
+    if number % 2 == 0:
+        even.append(number)
+    else:
+        odd.append(number)
 
-    pos = 0
-    for j in range(len(order)):
-        pos = j
-        if number_is_even:
-            if order[j] % 2 != 0:
-                break
-            elif number < order[j]:
-                break
-        else:
-            if order[j] % 2 != 0:
-                if number > order[j]:
-                    break
-        pos = j+1
+quicksort(even, 0, len(even) - 1)
+quicksort(odd, 0, len(odd) - 1)
 
-    order.insert(pos, number)
+for number in even:
+    print(number)
 
-for n in order:
-    print(n)
+for number in reversed(odd):
+    print(number)

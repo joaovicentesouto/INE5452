@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 
 while True:
-    n, m = input().split(" ")
+    
+    _init = input()
+    print(_init)
+
+    n, m = _init.split(" ")
     n = int(n)
     m = int(m)
-
-    print("%d %d" % (n, m))
 
     if not n and not m:
         break
@@ -34,4 +36,4 @@ while True:
     
     order = sorted(order, key=_sort)
     for number in order:
-        print("%d" % number)
+        print(number)

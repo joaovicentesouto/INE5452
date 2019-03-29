@@ -23,19 +23,5 @@ for i in range(amount):
 
 	insert_order(board, [country, medals])
 
-# for country in board:
-# 	print("%s " % country[0], end="")
-# 	for medal in country[1]:
-# 		print("%s " % medal, end="")
-# 	print("")
-
-for i in range(len(board)-1):
-	print(board[i][0], end=" ")
-	for medal in board[i][1]:
-		print(medal, end=" ")
-	print("")
-
-print(board[-1][0], end=" ")
-for medal in board[-1][1]:
-	print(medal, end=" ")
-print("")
+for country in board:
+	print("%s %d %d %d" % (country[0], country[1][0], country[1][1], country[1][2]))
