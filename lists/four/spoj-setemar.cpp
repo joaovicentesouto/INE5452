@@ -1,10 +1,11 @@
 #include <stdio.h>
+#include <iostream>
 #include <vector>
 #include <unordered_map>
 
-#define MOVE(tx, ty, ch) (tabuleiro[tx][ty] = ch)
-
 using namespace std;
+
+#define MOVE(tx, ty, ch) (tabuleiro[tx][ty] = ch)
 
 //! Variáveis globais
 vector<pair<int, int>> inimigos;
@@ -13,11 +14,11 @@ char tabuleiro[9][8];
 
 bool destroi_inimigos(int nivel)
 {
-    if (nivel == 10  && !inimigos.empty())
-        return false; //! Não consegui matar
-    
-    if (nivel == 10  && inimigos.empty())
+    if (nivel == 10 && inimigos.empty())
         return true;
+
+    if (nivel == 10)
+        return false; //! Não consegui matar
 
     for (int i = -1; i <= 1; i++)
     {
@@ -34,14 +35,14 @@ bool destroi_inimigos(int nivel)
             bool morte = false;
 
             pair<int, int> antigo_jogador = jogador;
-            vector<pair<int, int>> antigos_inimigos = inimigos;
+            vector<pair<int, int>> antigos_inimigos(inimigos.begin(), inimigos.end());
             unordered_map<int, int> olds;
 
             inimigos.clear();
             jogador = {jogador.first + i, jogador.second + j};
 
 
-            if (tabuleiro[jogador.first][jogador.second] == 'E')
+            if (tabuleiro[jogador.first][jogador.second] == 'E' || tabuleiro[jogador.first][jogador.second] == '#')
             {
                 morte = true;
                 goto morte_label;
@@ -93,24 +94,26 @@ int main(void)
 {
     int casos;
 
-    scanf("%d", &casos);
+    cin >> casos;
 
     for (int c = 0; c < casos; c++)
     {
         for (int i = 0; i < 9; i++)
+        {
             for (int j = 0; j < 8; j++)
             {
-                scanf("%c", &tabuleiro[i][j]);
+                cin >> tabuleiro[i][j];
                 if (tabuleiro[i][j] == 'S')
                     jogador = {i, j};
                 else if (tabuleiro[i][j] == 'E')
                     inimigos.push_back({i, j});
             }
+        }
         
         if (destroi_inimigos(0))
-            printf("I'm the king of the Seven Seas! ini: %u\n", inimigos.size());
+            cout << "I'm the king of the Seven Seas!" << endl;
         else
-            printf("Oh no! I'm a dead man! ini: %u\n", inimigos.size());
+            cout << "Oh no! I'm a dead man!" << endl;
         
         inimigos.clear();
     }

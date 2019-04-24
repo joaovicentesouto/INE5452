@@ -40,7 +40,6 @@ void positioning(
         if (!history[board])
         {
             possibilities++;
-            cout << possibilities << endl;
             history[board] = true;
         }
 
@@ -48,8 +47,9 @@ void positioning(
     }
 
     int n = sqrt(board.size());
+    int initial_i = bishops.empty() ? 0 : bishops[0].x;
 
-    for (int i = 0; i < n; i++)
+    for (int i = initial_i; i < n; i++)
     {
         for (int j = 0; j < n; j++)
         {
