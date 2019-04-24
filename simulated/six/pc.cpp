@@ -1,62 +1,51 @@
 #include <iostream>
-#include <vector>
-#include <algorithm>    // std::sort
 
 using namespace std;
 
-struct Cano
+int main() 
 {
-	Cano(int tamanho, int preco) :
-		t(tamanho),
-		p(preco)
-	{
-		p_tamanho = ((double) preco) / ((double) tamanho);
-	}
+	int canos, capacidade;
 
-	int t, p;
-	double p_tamanho;
-};
+	cin >> canos >> capacidade;
 
-int main(void)
-{
-	int casos, tamanho_total;
+    int precos[canos];
+    int tamanhos[canos];
 
-	cin >> casos >> tamanho_total;
+	for (int i = 0; i < canos; i++)
+		cin >> tamanhos[i] >> precos[i];
 
-	vector<Cano> canos;
+    // Populate base cases
+    int mat[canos + 1][capacidade + 1];
 
-	for (int i = 0; i < casos ; i ++) {
-		int tamanho, preco;
-		cin >> tamanho >> preco;
-		canos.emplace_back(tamanho, preco);
-	}
+	for (int i = 0; i < canos + 1; i++)
+		for (int j = 0; j < capacidade + 1; j++)
+			mat[i][j] = 0;
 
-	sort(
-		canos.begin(),
-		canos.end(),
-		[=](const Cano &a, const Cano &b) 
-		{
-		    return a.p_tamanho > b.p_tamanho; 
-		}
-	); 
+    // Main logic
+    for (int item = 1; item <= canos; item++)
+    {
+        for (int cap_atual = 1; cap_atual <= capacidade; cap_atual++)
+        {
+            int maxValWithoutCurr = mat[item - 1][cap_atual];
+            int maxValWithCurr = 0;
+            
+            int weightOfCurr = tamanhos[item - 1];
 
-	int total = 0;
+            int vezes = 1;
 
+            while (cap_atual >= (vezes * weightOfCurr))
+            {
+                maxValWithCurr = vezes * precos[item - 1];
+                
+                int remainingcap_atual = cap_atual - vezes * weightOfCurr;
+                maxValWithCurr += mat[item - 1][remainingcap_atual];
 
-	cout.precision(10);
+                mat[item][cap_atual] = max(maxValWithoutCurr, maxValWithCurr);
+            }
+        }
+    }
 
-	for (auto & cano : canos)
-	{
-		cout << cano.t << " " << cano.p << " " << cano.p_tamanho << endl;
+		cout << mat[canos][capacidade] << endl;
 
-		while (tamanho_total >= cano.t)
-		{
-			tamanho_total -= cano.t;
-			total += cano.p;
-		}
-
-		// cout << tamanho_total << " - " << total << endl;
-	}
-
-	cout << total << endl;
+	return 0; 
 }

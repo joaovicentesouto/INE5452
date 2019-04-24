@@ -6,7 +6,7 @@ struct node {
 	double x, y;
 };
 
-double dist(struct node * a, struct node * b)
+double dist(struct node * a, struct node * b) 
 {
     return sqrt(
         pow(a->x - b->x, 2) + 
