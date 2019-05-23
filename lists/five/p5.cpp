@@ -1,32 +1,30 @@
-#include <iostream>
-#include <vector>
-#include <cmath>
+#include <stdio.h>
 
-using namespace std;
-
-struct Present
+typedef struct
 {
 	int h, w, d;
-};
+} Present;
 
-int compare(const void *a, const void * b)
+int max(int a, int b)
 {
-	Present * pa = (Present *) a;
-	Present * pb = (Present *) b;
+	return (a < b) ? b : a;
+}
 
-	return (pb->d * pb->w) - (pa->d * pa->w);
+int min(int a, int b)
+{
+	return (a <= b) ? a : b;
 }
 
 int main()
 {
 	int presents;
 
-	cin >> presents;
+	scanf("%d", &presents);
 
 	Present arr[presents];
 
 	for (int p = 0; p < presents; p++)
-		cin >> arr[p].h >> arr[p].w >> arr[p].d;
+		scanf("%d %d %d", &arr[p].h, &arr[p].w, &arr[p].d);
 
 	Present rot[3 * presents];
 
@@ -54,27 +52,45 @@ int main()
 
 	presents = 3 * presents;
 
-	// qsort(rot, presents, sizeof(rot[0]), compare);
-
 	int msh[presents];
 	for (int i = 0; i < presents; i++ )
 		msh[i] = rot[i].h;
+	
+	int used_all = 1;
 
-	for (int i = 1; i < presents; i++)
+	int olds_h[3];
+
+	for (int i = 3; i <= presents; i++)
 	{
-		for (int j = 0; j < i; j++)
+		if (i % 3 == 0 && i / 3 >= 2)
 		{
-			if (rot[i].w < rot[j].w &&  rot[i].d < rot[j].d && msh[i] < msh[j] + rot[i].h)
-				msh[i] = msh[j] + rot[i].h;
+			int equal = 0;
+			for (int k = 0; k < 3 && (i+k-3) < presents; k++)
+				equal |= (olds_h[k] != msh[i+k-3]);
+
+			used_all = equal;
+
+			if (!used_all || i == presents)
+				break;
 		}
+
+		if (i % 3 == 0)
+		{
+			for (int k = 0; k < 3 && (i+k) < presents; k++)
+				olds_h[k] = msh[i+k];
+		}
+
+		for (int j = (i - (i % 3)) - 3; j < (i - (i % 3)); j++)
+			if (rot[i].w <= rot[j].w &&  rot[i].d <= rot[j].d && msh[i] < msh[j] + rot[i].h)
+				msh[i] = msh[j] + rot[i].h;
 	}
 
 	int max = -1;
-	for (int i = 0; i < presents; i++)
+	for (int i = 0; i < presents && used_all; i++)
 		if (max < msh[i])
 			max = msh[i];
 
-	cout << max << endl;
+	printf("%d\n", max);
 
 	return 0;
 }
