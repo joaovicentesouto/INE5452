@@ -2,7 +2,7 @@
 #include <string>
 #include <vector>
 #include <unordered_map>
-#include <set>
+#include <unordered_set>
 
 using namespace std;
 
@@ -18,7 +18,7 @@ int main()
 			break;
 
         string aux;
-        unordered_map<string, set<string>> states;
+        unordered_map<string, unordered_set<string>> states;
 
 		for (int i = 0; i < n; ++i)
 		{
@@ -60,7 +60,7 @@ int main()
 				{
 					ch += line[i+1];
 
-					for (auto c : set<string>(curr))
+					for (auto c : unordered_set<string>(curr))
 					{
 						if (c == "\0\1")
 						{
