@@ -1,114 +1,92 @@
 #include <iostream>
-#include <unordered_map>
-#include <unordered_set>
+#include <vector>
+#include <queue>
 #include <cmath>
 
 using namespace std;
 
 enum Side
 {
-    STAND = 0,
-    LEFT  = 1,
-    RIGHT = 2
+	STAND = -1,
+	LEFT  =  0,
+	RIGHT =  1
 };
 
-class Graph
+static int people;
+static int pos[102];
+static int status[102];
+static int adj[102][102];
+
+bool sitting_down(int s)
 {
-public:
-    Graph(int n_) : n(n_), adj(n_), status(n_) {}
+	queue<int> q;
 
-    int n;
-	unordered_map<int, unordered_set<int>> adj;
-    unordered_map<int, Side> status;
-};
+	status[s] = Side::LEFT;
+	q.push(s);
 
-void put(Graph & g, int u, int v)
-{
-    if (g.status[u] == Side::LEFT)
-        g.status[v] = Side::RIGHT;
-    else
-        g.status[v] = Side::LEFT;
-}
+	while (!q.empty())
+	{
+		int u = q.front();
+		q.pop();
 
-bool sitting_down(Graph &g, int u)
-{
-	for (const auto & v : g.adj[u])
-    {
-        //! Already seated.
-        if (g.status[v] != Side::STAND)
-        {
-            if (g.status[u] == g.status[v])
-                return false;
-        }
+		for (int i = 0; i < pos[u]; i++)
+		{
+			int v = adj[u][i];
 
-        //! Standing
-        else
-        {
-            put(g, u, v);
-
-            if (!sitting_down(g, v))
-                return false;
-        }
-    }
+			if (status[v] == Side::STAND)
+			{
+				status[v] = (status[u] + 1) % 2;
+				q.push(v);
+			}
+			else if (status[u] == status[v])
+				return false;
+		}
+	}
 
 	return true;
 }
 
-bool can_partitionate(Graph &g)
+bool can_partitionate()
 {
-    for (int i = 1; i <= g.n; ++i)
-    {
-        if (g.status[i] == Side::STAND)
-        {
-            g.status[i] = Side::STAND;
+	for (int u = 1; u <= people; ++u)
+	{
+		if (status[u] == Side::STAND)
+			if (!sitting_down(u))
+				return false;
+	}
 
-            for (const auto & v : g.adj[i])
-            {
-                if (g.status[v] != Side::STAND)
-                {
-                    put(g, v, i);
-                    break;
-                }
-            }
-
-            if (g.status[i] == Side::STAND)
-                g.status[i] = Side::LEFT;
-
-            if (!sitting_down(g, i))
-                return false;
-        }
-    }
-
-    return true;
+	return true;
 }
 
 int main()
 {
-    int n, m, u, v, cases = 1;
+	int n, m, u, v, cases = 1;
 
 	while (cin >> n >> m)
 	{
-        Graph g(n);
+		people = n;
 
-        // if (cases == 32)
-        //     cout << n << " . " << m << endl;
+		for (int i = 1; i <= n; ++i)
+		{
+			pos[i] = 0;
+			status[i] = Side::STAND;
+		}
 
-        for (int i = 0; i < m; ++i)
-        {
-            cin >> u >> v;
-            // if (cases == 32)
-            //     cout << u << " . " << v << endl;
-            g.adj[u].insert(v);
-            g.adj[v].insert(u);
-        }
+		for (int i = 0; i < m; ++i)
+		{
+			cin >> u >> v;
 
-        cout << "Instancia " << cases++ << endl;
+			adj[u][pos[u]++] = v;
+			adj[v][pos[v]++] = u;
+		}
 
-        if (can_partitionate(g))
-            cout << "sim" << endl;
-        else
-            cout << "nao" << endl;
-        cout << endl;
+		cout << "Instancia " << cases++ << endl;
+
+		if (can_partitionate())
+			cout << "sim" << endl;
+		else
+			cout << "nao" << endl;
+		cout << endl;
 	}
 
 	return 0;
