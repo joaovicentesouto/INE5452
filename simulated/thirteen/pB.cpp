@@ -16,7 +16,7 @@ using namespace std;
 int pos[V];
 int adj[V][V];
 int cost[V][V];
-  
+  a
 /* Returns true if there is a path from source 's' to sink 't' in 
   residual graph. Also fills parent[] to store the path */
 bool bfs(int rGraph[V][V], int s, int t, int parent[]) 
